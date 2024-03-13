@@ -4,7 +4,9 @@ package api.finances.controller;
 import api.finances.mapper.CategoryMapper;
 import api.finances.model.Category;
 import api.finances.model.dto.CategoryDto;
+import api.finances.model.request.CategoryRequest;
 import api.finances.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +33,10 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void create(@RequestBody Category category) {
+    public void create(@Valid @RequestBody CategoryRequest categoryRequest) {
+
+        Category category = this.categoryMapper.toDomainModel(categoryRequest);
+
         this.categoryService.create(category);
     }
 
@@ -44,9 +49,18 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public CategoryDto update(@PathVariable Long id, @RequestBody Category category) {
+    public CategoryDto update(@PathVariable Long id, @Valid @RequestBody CategoryRequest categoryRequest) {
+
+        Category category = this.categoryMapper.toDomainModel(categoryRequest);
+
         Category categoryUpdated = this.categoryService.update(id, category);
 
         return this.categoryMapper.toDto(categoryUpdated);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable Long id){
+        this.categoryService.delete(id);
     }
 }

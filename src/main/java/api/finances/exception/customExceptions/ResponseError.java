@@ -24,7 +24,7 @@ public class ResponseError {
 
     @Getter
     @AllArgsConstructor
-    static class FieldsValidation {
+    public static class FieldsValidation {
         private String field;
         private String message;
     }
