@@ -2,6 +2,7 @@ package api.finances.service;
 
 
 import api.finances.exception.customExceptions.NotFoundException;
+import api.finances.model.Category;
 import api.finances.model.User;
 import api.finances.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class UserService {
     public List<User> findAll() {
         return this.userRepository.findAll();
     }
+
+
 
     public void create(User user) {
         this.userRepository.save(user);

@@ -8,6 +8,7 @@ import api.finances.model.request.CategoryRequest;
 import api.finances.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +24,10 @@ public class CategoryController {
     @Autowired
     private CategoryMapper categoryMapper;
 
-    @GetMapping
-    public List<CategoryDto> listAll() {
+    @GetMapping("/user/{id}")
+    public List<CategoryDto> getCategoriesByUserId(@PathVariable("id") Long user_id) {
 
-        List<Category> categoryList = this.categoryService.findAll();
+        List<Category> categoryList = this.categoryService.getCategories(user_id);
 
         return this.categoryMapper.toListDto(categoryList);
     }
@@ -40,27 +41,32 @@ public class CategoryController {
         this.categoryService.create(category);
     }
 
-    @GetMapping("/{id}")
-    public CategoryDto findOne(@PathVariable Long id){
+    @GetMapping("/{id}/user/{user_id}")
+    public CategoryDto findOne(@PathVariable Long id, @PathVariable Long user_id) {
 
-        Category category = this.categoryService.findById(id);
+        Category category = this.categoryService.findByUserId(id, user_id);
 
         return this.categoryMapper.toDto(category);
     }
 
     @PutMapping("/{id}")
-    public CategoryDto update(@PathVariable Long id, @Valid @RequestBody CategoryRequest categoryRequest) {
+    public CategoryDto update(@PathVariable Long id,
+                              @Valid @RequestBody CategoryRequest categoryRequest) {
+
+        Long user_id = categoryRequest.getUser().getId();
 
         Category category = this.categoryMapper.toDomainModel(categoryRequest);
 
-        Category categoryUpdated = this.categoryService.update(id, category);
+        this.categoryService.update(id, user_id, category);
+
+        Category categoryUpdated = this.categoryService.findByUserId(id, user_id);
 
         return this.categoryMapper.toDto(categoryUpdated);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/user/{user_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remove(@PathVariable Long id){
-        this.categoryService.delete(id);
+    public void remove(@PathVariable Long id, @PathVariable Long user_id) {
+        this.categoryService.delete(id, user_id);
     }
 }

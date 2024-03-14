@@ -3,6 +3,7 @@ package api.finances.service;
 
 import api.finances.exception.customExceptions.NotFoundException;
 import api.finances.model.Category;
+import api.finances.model.User;
 import api.finances.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,11 @@ public class CategoryService {
     @Autowired
     private UserService userService;
 
-    public List<Category> findAll() {
-        return this.categoryRepository.findAll();
+    public List<Category> getCategories(Long user_id){
+
+        User user = this.userService.findById(user_id);
+
+        return user.getCategories();
     }
 
     public void create(Category category) {
@@ -29,14 +33,14 @@ public class CategoryService {
         this.categoryRepository.save(category);
     }
 
-    public Category findById(Long id) {
-        return this.categoryRepository.findById(id)
+    public Category findByUserId(Long id, Long user_id) {
+        return this.categoryRepository.findByUserId(id, user_id)
                 .orElseThrow(() -> new NotFoundException(id));
     }
 
-    public Category update(Long id, Category category) {
+    public Category update(Long id, Long user_id, Category category) {
 
-        this.findById(id);
+        this.findByUserId(id, user_id);
 
         this.userService.findById(category.getUser().getId());
 
@@ -45,9 +49,9 @@ public class CategoryService {
         return this.categoryRepository.save(category);
     }
 
-    public void delete(Long id) {
+    public void delete(Long id, Long user_id) {
 
-        this.findById(id);
+        this.findByUserId(id, user_id);
 
         this.categoryRepository.deleteById(id);
     }

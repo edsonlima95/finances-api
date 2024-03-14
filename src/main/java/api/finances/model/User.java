@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "users")
@@ -21,6 +24,11 @@ public class User {
     private String password;
     private Boolean status;
 
+    @OneToMany(mappedBy = "user")
+    private List<Category> categories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Wallet> wallets = new ArrayList<>();
 }
 
 
