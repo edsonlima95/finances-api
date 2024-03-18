@@ -19,7 +19,7 @@ public class CategoryService {
     @Autowired
     private UserService userService;
 
-    public List<Category> getCategories(Long user_id){
+    public List<Category> getCategories(Long user_id) {
 
         User user = this.userService.findById(user_id);
 
@@ -54,5 +54,9 @@ public class CategoryService {
         this.findByUserId(id, user_id);
 
         this.categoryRepository.deleteById(id);
+    }
+
+    public Category findById(Long id) {
+        return this.categoryRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 }

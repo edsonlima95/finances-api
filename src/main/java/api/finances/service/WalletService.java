@@ -1,6 +1,7 @@
 package api.finances.service;
 
 import api.finances.exception.customExceptions.NotFoundException;
+import api.finances.model.Category;
 import api.finances.model.User;
 import api.finances.model.Wallet;
 import api.finances.repository.WalletRepository;
@@ -49,6 +50,10 @@ public class WalletService {
         return this.walletRepository.findByUserId(id, user_id).orElseThrow(() -> new NotFoundException(id));
     }
 
+    public Wallet findById(Long id) {
+        return this.walletRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+    }
+
     public void delete(Long id, Long user_id) {
 
         this.findByUserId(id, user_id);
@@ -56,4 +61,6 @@ public class WalletService {
         this.walletRepository.deleteById(id);
 
     }
+
+
 }
